@@ -2,7 +2,13 @@
 
 /**
  * Генерирует объект с метаинформацией
- * @return {{title: String, description: String, keywords: String[], language: String, opengraph: Object}} Объект с метаинформацией
+ * @return {{
+ * title: String,
+ * description: String,
+ * keywords: String[],
+ * language: String,
+ * opengraph: Object
+ * }}
  */
 function generateMetaObject() {
     const headElement = document.head;
