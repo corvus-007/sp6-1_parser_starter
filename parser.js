@@ -1,20 +1,53 @@
 // @todo: напишите здесь код парсера
 
+const MappingColorTagAndType = {
+    green: 'category',
+    blue: 'label',
+    red: 'discount',
+};
+
+const MappingCurrencySymbolAndCurrencyCode = {
+    '$': 'USD',
+    '€': 'EUR',
+    '₽': 'RUB',
+};
+
+/**
+ * Возвращает подстроку до знака `—`
+ * @param str
+ * @return {string} заголовок
+ */
+function getTitleFromString(str) {
+    const SEPARATOR = '—';
+    const [title] = str.split(SEPARATOR);
+
+    return title.trim();
+}
+
+/**
+ * Форматирует дату
+ * @param date дата в формате DD/MM/YYYY
+ * @return {string} дата в формате DD.MM.YYYY
+ */
+function formatDate(date) {
+    return date.split('/').join('.');
+}
+
 /**
  * Генерирует объект с метаинформацией
  * @return {{
- * title: String,
- * description: String,
- * keywords: String[],
- * language: String,
- * opengraph: Object
+ * title: string,
+ * description: string,
+ * keywords: string[],
+ * language: string,
+ * opengraph: {title: string, image: string, type: string}
  * }}
  */
 function generateMetaObject() {
     const headElement = document.head;
 
-    let [title] = headElement.querySelector('title').textContent.split('—');
-    title = title.trim();
+    const title = getTitleFromString(
+        headElement.querySelector('title').textContent);
     const description = headElement.querySelector('[name="description"]').
         content.
         trim();
@@ -26,7 +59,12 @@ function generateMetaObject() {
     const openGraphTags = headElement.querySelectorAll('[property^="og:"]');
     const opengraph = Array.from(openGraphTags).reduce((acc, tag) => {
         const [, propertyName] = tag.getAttribute('property').split(':');
-        acc[propertyName] = tag.content;
+
+        if (propertyName === 'title') {
+            acc[propertyName] = getTitleFromString(tag.content);
+        } else {
+            acc[propertyName] = tag.content;
+        }
 
         return acc;
     }, {});
@@ -43,33 +81,22 @@ function generateMetaObject() {
 /**
  * Генерирует объект карточки товара
  * @return {{
- * id: String,
- * name: String,
- * isLiked: Boolean,
- * tags: Object[],
- * price: Number
- * oldPrice: Number,
- * discount: Number,
- * discountPercent: String,
- * currency: String,
- * properties: Object,
- * description: String,
- * images: Object[]
+ * id: string,
+ * name: string,
+ * isLiked: boolean,
+ * tags: {[key]: string[]},
+ * price: number
+ * oldPrice: number,
+ * discount: number,
+ * discountPercent: string,
+ * currency: string,
+ * properties: {[key]: string},
+ * description: string,
+ * images: {preview: string, full: string, alt: string}[]
  * }}
  */
 function generateProductObject() {
     const productElement = document.querySelector('.product');
-    const MappingColorTagAndType = {
-        green: 'category',
-        blue: 'label',
-        red: 'discount',
-    };
-    const MappingCurrencySymbolAndCurrencyCode = {
-        '$': 'USD',
-        '€': 'EUR',
-        '₽': 'RUB',
-    };
-
     const id = productElement.dataset.id;
     const name = productElement.querySelector('h1').textContent.trim();
     const images = Array.from(productElement.querySelectorAll('nav img')).
@@ -129,8 +156,9 @@ function generateProductObject() {
 
             return acc;
         }, {});
+    productElement.querySelector('.unused')?.removeAttribute('class');
     const description = productElement.querySelector('.description').
-        textContent.
+        innerHTML.
         trim();
 
     return {
@@ -153,11 +181,11 @@ function generateProductObject() {
  * Генерирует массив дополнительных товаров
  * @return {
  * {
- * name: String,
- * description: String,
- * image: String,
- * price: String,
- * currency: String
+ * name: string,
+ * description: string,
+ * image: string,
+ * price: string,
+ * currency: string
  * }[]
  * }
  */
@@ -173,7 +201,8 @@ function generateSuggestedProductsArray() {
                 textContent.
                 trim();
             const price = priceWithCurrency.slice(1);
-            const currency = priceWithCurrency.slice(0, 1);
+            const currency = MappingCurrencySymbolAndCurrencyCode[priceWithCurrency.slice(
+                0, 1)];
 
             return {
                 name,
@@ -189,11 +218,11 @@ function generateSuggestedProductsArray() {
  * Генерирует массив обзоров
  * @return {
  * {
- * rating: Number,
- * author: {avatar: String, name: String}
- * title: String,
- * description: String,
- * date: String
+ * rating: number,
+ * author: {avatar: string, name: string}
+ * title: string,
+ * description: string,
+ * date: string
  * }[]
  * }
  */
@@ -215,9 +244,10 @@ function generateReviewsArray() {
                 nextElementSibling.
                 textContent.
                 trim();
-            const date = itemElement.querySelector('.author i').
+            const date = formatDate(itemElement.querySelector('.author i').
                 textContent.
-                trim();
+                trim(),
+            );
 
             return {
                 rating,
