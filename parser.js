@@ -185,12 +185,56 @@ function generateSuggestedProductsArray() {
         });
 }
 
+/**
+ * Генерирует массив обзоров
+ * @return {
+ * {
+ * rating: Number,
+ * author: {avatar: String, name: String}
+ * title: String,
+ * description: String,
+ * date: String
+ * }[]
+ * }
+ */
+function generateReviewsArray() {
+    return Array.from(document.querySelector('.reviews .items').children,
+        (itemElement) => {
+            const rating = itemElement.querySelectorAll(
+                '.rating .filled').length;
+            const author = {
+                avatar: itemElement.querySelector('.author img').src,
+                name: itemElement.querySelector('.author span').
+                    textContent.
+                    trim(),
+            };
+            const title = itemElement.querySelector('.title').
+                textContent.
+                trim();
+            const description = itemElement.querySelector('.title').
+                nextElementSibling.
+                textContent.
+                trim();
+            const date = itemElement.querySelector('.author i').
+                textContent.
+                trim();
+
+            return {
+                rating,
+                author,
+                title,
+                description,
+                date,
+            };
+        });
+}
+
 function parsePage() {
     return {
         meta: generateMetaObject(),
         product: generateProductObject(),
         suggested: generateSuggestedProductsArray(),
-        reviews: [],
+        reviews: generateReviewsArray(),
     };
 }
 
