@@ -149,11 +149,47 @@ function generateProductObject() {
     };
 }
 
+/**
+ * Генерирует массив дополнительных товаров
+ * @return {
+ * {
+ * name: String,
+ * description: String,
+ * image: String,
+ * price: String,
+ * currency: String
+ * }[]
+ * }
+ */
+function generateSuggestedProductsArray() {
+    return Array.from(document.querySelector('.suggested .items').children,
+        (itemElement) => {
+            const name = itemElement.querySelector('h3').textContent.trim();
+            const description = itemElement.querySelector('p').
+                textContent.
+                trim();
+            const image = itemElement.querySelector('img').src;
+            const priceWithCurrency = itemElement.querySelector('b').
+                textContent.
+                trim();
+            const price = priceWithCurrency.slice(1);
+            const currency = priceWithCurrency.slice(0, 1);
+
+            return {
+                name,
+                description,
+                image,
+                price,
+                currency,
+            };
+        });
+}
+
 function parsePage() {
     return {
         meta: generateMetaObject(),
         product: generateProductObject(),
-        suggested: [],
+        suggested: generateSuggestedProductsArray(),
         reviews: [],
     };
 }
