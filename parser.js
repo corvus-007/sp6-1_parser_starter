@@ -36,11 +36,11 @@ function formatDate(date) {
 /**
  * Генерирует объект с метаинформацией
  * @return {{
- * title: string,
- * description: string,
- * keywords: string[],
- * language: string,
- * opengraph: {title: string, image: string, type: string}
+ *   title: string,
+ *   description: string,
+ *   keywords: string[],
+ *   language: string,
+ *   opengraph: {title: string, image: string, type: string}
  * }}
  */
 function generateMetaObject() {
@@ -81,18 +81,18 @@ function generateMetaObject() {
 /**
  * Генерирует объект карточки товара
  * @return {{
- * id: string,
- * name: string,
- * isLiked: boolean,
- * tags: {[key]: string[]},
- * price: number
- * oldPrice: number,
- * discount: number,
- * discountPercent: string,
- * currency: string,
- * properties: {[key]: string},
- * description: string,
- * images: {preview: string, full: string, alt: string}[]
+ *   id: string,
+ *   name: string,
+ *   isLiked: boolean,
+ *   tags: {[key: string]: string[]},
+ *   price: number,
+ *   oldPrice: number,
+ *   discount: number,
+ *   discountPercent: string,
+ *   currency: string,
+ *   properties: {[key: string]: string},
+ *   description: string,
+ *   images: {preview: string, full: string, alt: string}[]
  * }}
  */
 function generateProductObject() {
@@ -181,11 +181,11 @@ function generateProductObject() {
  * Генерирует массив дополнительных товаров
  * @return {
  * {
- * name: string,
- * description: string,
- * image: string,
- * price: string,
- * currency: string
+ *   name: string,
+ *   description: string,
+ *   image: string,
+ *   price: string,
+ *   currency: string
  * }[]
  * }
  */
@@ -218,11 +218,11 @@ function generateSuggestedProductsArray() {
  * Генерирует массив обзоров
  * @return {
  * {
- * rating: number,
- * author: {avatar: string, name: string}
- * title: string,
- * description: string,
- * date: string
+ *   rating: number,
+ *   author: {avatar: string, name: string},
+ *   title: string,
+ *   description: string,
+ *   date: string
  * }[]
  * }
  */
