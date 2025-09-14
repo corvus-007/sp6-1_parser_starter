@@ -46,8 +46,7 @@ function formatDate(date) {
 function generateMetaObject() {
     const headElement = document.head;
 
-    const title = getTitleFromString(
-        headElement.querySelector('title').textContent);
+    const title = getTitleFromString(document.title);
     const description = headElement.querySelector('[name="description"]').
         content.
         trim();
